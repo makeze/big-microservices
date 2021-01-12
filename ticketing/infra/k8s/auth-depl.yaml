@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: auth
-          image: maksudik/auth
+          image: us.gcr.io/maksudiktickets/auth
 ---
 apiVersion: v1
 kind: Service

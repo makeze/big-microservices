@@ -5,10 +5,12 @@ deploy:
     manifests:
       - ./infra/k8s/*
 build:
-  local:
-    push: false
+#  local:
+#    push: false
+  googleCloudBuild:
+    projectId: maksudiktickets
   artifacts:
-    - image: maksudik/auth
+    - image: us.gcr.io/maksudiktickets/auth
       context: auth
       docker:
         dockerfile: Dockerfile
