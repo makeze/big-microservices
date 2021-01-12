@@ -1,26 +1,22 @@
 import express from 'express';
 import {json} from 'body-parser';
 
+import {currentUserRouter} from "./currentuser";
+import {signInRouter} from "./signin";
+import {signOutRouter} from "./signout";
+import {signUpRouter} from "./signup";
+import {errorHandler} from "./middlewares/error-handler";
+
 const app = express();
 app.use(json());
 
-app.get('/api/users/currentuser', (req, res) => {
-    console.log("currentuser");
-    res.send("currentuser");
-});
+app.use(currentUserRouter);
+app.use(signInRouter);
+app.use(signOutRouter);
+app.use(signUpRouter);
 
-app.post('/api/users/signup', (req, res) => {
-    res.status(200).send("signup");
-});
-
-app.post('/api/users/signin', (req, res) => {
-    res.status(200).send("signin");
-});
-
-app.post('/api/users/signout', (req, res) => {
-   res.status(200).send("signout");
-});
+app.use(errorHandler);
 
 app.listen(3000, () => {
-    console.log("Listening on 3000, or?");
+    console.log("Listening on 3000");
 })
