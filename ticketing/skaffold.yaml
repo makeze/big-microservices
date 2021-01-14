@@ -10,7 +10,7 @@ build:
   googleCloudBuild:
     projectId: maksudiktickets
   artifacts:
-    - image: us.gcr.io/maksudiktickets/auth
+    - image: hastobeupdatedtoafreetieraccount
       context: auth
       docker:
         dockerfile: Dockerfile
