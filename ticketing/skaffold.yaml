@@ -8,9 +8,9 @@ build:
 #  local:
 #    push: false
   googleCloudBuild:
-    projectId: maksudiktickets
+    projectId: maksudikticketing
   artifacts:
-    - image: hastobeupdatedtoafreetieraccount
+    - image: us.gcr.io/maksudikticketing/auth
       context: auth
       docker:
         dockerfile: Dockerfile

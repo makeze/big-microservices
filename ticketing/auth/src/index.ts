@@ -24,5 +24,5 @@ app.get('*', async (req, res) => {
 app.use(errorHandler);
 
 app.listen(3000, () => {
-    console.log("Listening on 3000");
+    console.log("Maksudik.dev. Listening on 3000");
 })
