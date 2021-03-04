@@ -2,13 +2,9 @@ import express from 'express';
 import 'express-async-errors';
 import {json} from 'body-parser';
 import cookieSession from "cookie-session";
-import {errorHandler, NotFoundError} from '@maxytick/common';
+import {errorHandler, NotFoundError, currentUser} from '@maxytick/common';
 
-import {currentUserRouter} from "./routes/currentuser";
-import {signInRouter} from "./routes/signin";
-import {signOutRouter} from "./routes/signout";
-import {signUpRouter} from "./routes/signup";
-
+import {createTicketRouter} from './routes/new';
 
 const app = express();
 app.set('trust proxy', true);
@@ -19,11 +15,9 @@ app.use(
         secure: process.env.NODE_ENV !== 'test'
     })
 );
+app.use(currentUser);
 
-app.use(currentUserRouter);
-app.use(signInRouter);
-app.use(signOutRouter);
-app.use(signUpRouter);
+app.use(createTicketRouter);
 
 app.get('*', async (req, res) => {
     throw new NotFoundError();
