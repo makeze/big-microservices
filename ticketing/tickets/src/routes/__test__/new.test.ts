@@ -19,6 +19,7 @@ it ('can only be accessed if the user is signed in', async () => {
 it ('returns 200 if user is signed in', async () => {
     const response = await request(app)
         .post('/api/tickets')
+        .set('Cookie', global.signin())
         .send({});
 
     expect(response.status).toEqual(200);
