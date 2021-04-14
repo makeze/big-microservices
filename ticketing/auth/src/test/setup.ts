@@ -1,63 +1,56 @@
-import {MongoMemoryServer} from 'mongodb-memory-server';
+import { MongoMemoryServer } from 'mongodb-memory-server';
 import mongoose from 'mongoose';
 import request from 'supertest';
-import {app} from '../app';
-import jwt from 'jsonwebtoken';
+import { app } from '../app';
 
 declare global {
-    namespace NodeJS {
-        interface Global {
-            signin(): string[]
-        }
+  namespace NodeJS {
+    interface Global {
+      signin(): Promise<string[]>;
     }
+  }
 }
 
-let mongo: MongoMemoryServer;
-
+let mongo: any;
 beforeAll(async () => {
-    process.env.JWT_KEY = 'maksudik';
-    mongo = new MongoMemoryServer();
-    const mongoUri = await mongo.getUri();
+  process.env.JWT_KEY = 'asdfasdf';
+  process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
-    await mongoose.connect(mongoUri, {
-        useNewUrlParser: true,
-        useUnifiedTopology: true
-    });
+  mongo = new MongoMemoryServer();
+  const mongoUri = await mongo.getUri();
+
+  await mongoose.connect(mongoUri, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+  });
 });
 
 beforeEach(async () => {
-    const collections = await mongoose.connection.db.collections();
+  const collections = await mongoose.connection.db.collections();
 
-    for (let collection of collections) {
-        await collection.deleteMany({});
-    }
+  for (let collection of collections) {
+    await collection.deleteMany({});
+  }
 });
 
 afterAll(async () => {
-    await mongo.stop();
-    await mongoose.connection.close();
+  await mongo.stop();
+  await mongoose.connection.close();
 });
 
-global.signin = () => {
+global.signin = async () => {
+  const email = 'test@test.com';
+  const password = 'password';
 
-    // build a jwt payload {id, email}
-    const payload = {
-        id: 'e15d12c',
-        email: 'maksudik@gmail.com'
-    }
+  const response = await request(app)
+    .post('/api/users/signup')
+    .send({
+      email,
+      password
+    })
+    .expect(201);
 
-    // create jwt
-    const token = jwt.sign(payload, process.env.JWT_KEY!);
+  const cookie = response.get('Set-Cookie');
 
-    // build session Object {jwt: MY_JWT}
-    const session = {jwt: token};
-
-    // turn into JSON
-    const sessionJSON = JSON.stringify(session);
-
-    // take JSON and encode it as base64
-    const base64 = Buffer.from(sessionJSON).toString('base64');
-
-    // return a string cookie with encoded data
-    return [`express:sess=${base64}`];
-}
+  return cookie;
+};

@@ -1,49 +1,50 @@
-import express, {Request, Response} from 'express';
-import {body} from 'express-validator';
+import express, { Request, Response } from 'express';
+import { body } from 'express-validator';
 import jwt from 'jsonwebtoken';
-import {BadRequestError, validateRequest} from '@maxytick/common';
+import { validateRequest, BadRequestError } from '@maxytick/common';
 
-import {User} from '../models/user';
+import { User } from '../models/user';
 
 const router = express.Router();
 
-router.post('/api/users/signup', [
-        body('email')
-            .isEmail()
-            .withMessage('e-mail must be valid'),
-        body('password')
-            .trim()
-            .isStrongPassword({minLength: 8, minNumbers: 1, minSymbols: 1})
-            .withMessage('password must be at least 8 chars long and contain at least one number and symbol')
-    ],
-    validateRequest,
-    async (req: Request, res: Response) => {
+router.post(
+  '/api/users/signup',
+  [
+    body('email').isEmail().withMessage('Email must be valid'),
+    body('password')
+      .trim()
+      .isLength({ min: 4, max: 20 })
+      .withMessage('Password must be between 4 and 20 characters'),
+  ],
+  validateRequest,
+  async (req: Request, res: Response) => {
+    const { email, password } = req.body;
 
-        const {email, password} = req.body;
-        const existingUser = await User.findOne({email});
+    const existingUser = await User.findOne({ email });
 
-        if (existingUser) {
-            throw new BadRequestError('Email in use');
-        }
+    if (existingUser) {
+      throw new BadRequestError('Email in use');
+    }
 
-        const user = User.build({email, password});
-        await user.save();
+    const user = User.build({ email, password });
+    await user.save();
 
-        // Generate jwt and store in the session
+    // Generate JWT
+    const userJwt = jwt.sign(
+      {
+        id: user.id,
+        email: user.email,
+      },
+      process.env.JWT_KEY!
+    );
 
-        const userJwt = jwt.sign(
-            {
-                id: user.id,
-                email: user.email
-            },
-            process.env.JWT_KEY!
-        );
+    // Store it on session object
+    req.session = {
+      jwt: userJwt,
+    };
 
-        req.session = {
-            jwt: userJwt
-        };
+    res.status(201).send(user);
+  }
+);
 
-        res.status(201).send(user);
-    });
-
-export {router as signUpRouter}
+export { router as signupRouter };
