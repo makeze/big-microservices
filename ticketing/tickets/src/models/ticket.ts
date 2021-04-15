@@ -16,7 +16,7 @@ interface TicketModel extends mongoose.Model<TicketDoc> {
   build(attrs: TicketAttrs): TicketDoc;
 }
 
-const ticketSchema = new mongoose.Schema(
+const ticketSchema = new mongoose.Schema<TicketDoc, TicketModel>(
   {
     title: {
       type: String,
