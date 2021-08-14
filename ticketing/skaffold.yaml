@@ -5,12 +5,10 @@ deploy:
     manifests:
       - ./infra/k8s/*
 build:
-#  local:
-#    push: false
-  googleCloudBuild:
-    projectId: maksudikticketing
+  local:
+    push: false
   artifacts:
-    - image: us.gcr.io/maksudikticketing/auth
+    - image: maksudikticketing/auth
       context: auth
       docker:
         dockerfile: Dockerfile
@@ -18,7 +16,7 @@ build:
         manual:
           - src: 'src/**/*.ts'
             dest: .
-    - image: us.gcr.io/maksudikticketing/client
+    - image: maksudikticketing/client
       context: client
       docker:
         dockerfile: Dockerfile
@@ -26,7 +24,7 @@ build:
         manual:
           - src: '**/*.js'
             dest: .
-    - image: us.gcr.io/maksudikticketing/tickets
+    - image: maksudikticketing/tickets
       context: tickets
       docker:
         dockerfile: Dockerfile
