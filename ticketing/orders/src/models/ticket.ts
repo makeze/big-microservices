@@ -1,4 +1,6 @@
 import mongoose from 'mongoose';
+import {Order} from "./order";
+import {BadRequestError, OrderStatus} from "@maxytick/common";
 
 interface TicketAttrs {
     title: string,
@@ -6,6 +8,7 @@ interface TicketAttrs {
 }
 
 interface TicketDoc extends mongoose.Document {
+    isReserved(): boolean,
     title: string,
     price: number
 }
@@ -35,6 +38,20 @@ const ticketSchema = new mongoose.Schema<TicketDoc, TicketModel>({
 
 ticketSchema.statics.build = (attrs: TicketAttrs) => {
     return new Ticket(attrs);
+}
+
+ticketSchema.methods.isReserved = async function() {
+    const existingOrder = await Order.findOne({
+        ticket: this as any,
+        status: {
+            $in: [
+                OrderStatus.Created,
+                OrderStatus.AwaitingPayment,
+                OrderStatus.Complete
+            ]
+        }
+    });
+    return !!existingOrder;
 }
 
 const Ticket = mongoose.model<TicketDoc, TicketModel>('Ticket', ticketSchema);
