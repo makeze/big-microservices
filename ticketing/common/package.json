@@ -1,6 +1,6 @@
 {
   "name": "@maxytick/common",
-  "version": "1.0.30",
+  "version": "1.0.31",
   "description": "",
   "main": "./build/index.js",
   "types": "./build/index.d.ts",
@@ -28,5 +28,8 @@
     "express-validator": "^6.4.0",
     "jsonwebtoken": "^8.5.1",
     "node-nats-streaming": "^0.2.6"
+  },
+  "devDependencies": {
+    "del-cli": "^4.0.1"
   }
 }
