@@ -4,6 +4,8 @@ import {BadRequestError, NotFoundError, OrderStatus, requireAuth, validateReques
 import {body} from 'express-validator';
 import {Ticket} from "../models/ticket";
 import {Order} from "../models/order";
+import {OrderCreatedPublisher} from "../events/publishers/order-created-publisher";
+import {natsWrapper} from "../nats-wrapper";
 
 const router = express.Router();
 
@@ -13,7 +15,6 @@ router.post('/api/orders/', requireAuth, [
         body('ticketId')
             .not()
             .isEmpty()
-            .custom((input: string) => mongoose.Types.ObjectId.isValid(input))
             .withMessage('TicketId must be provided')
     ], validateRequest,
     async (req: Request, res: Response) => {
@@ -37,6 +38,17 @@ router.post('/api/orders/', requireAuth, [
             ticket
         });
         await order.save();
+
+        new OrderCreatedPublisher(natsWrapper.client).publish({
+            id: order.id,
+            status: order.status,
+            userId: order.userId,
+            expiresAt: order.expiresAt.toISOString(),
+            ticket: {
+                id: ticket.id,
+                price: ticket.price
+            }
+        });
 
         res.status(201).send(order);
     });

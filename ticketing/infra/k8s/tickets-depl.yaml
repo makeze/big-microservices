@@ -22,7 +22,7 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.name
-            - name: CLUSTER_ID
+            - name: NATS_CLUSTER_ID
               value: ticketing
             - name: MONGO_URI
               value: 'mongodb://tickets-mongo-srv:27017/tickets'
