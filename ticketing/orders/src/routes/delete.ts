@@ -3,7 +3,6 @@ import {requireAuth, NotFoundError, NotAuthorizedError} from "@maxytick/common";
 import {Order, OrderStatus} from '../models/order';
 import {OrderCancelledPublisher} from "../events/publishers/order-cancelled-publisher";
 import {natsWrapper} from "../nats-wrapper";
-import {Subjects} from "../../../common/src";
 
 const router = express.Router();
 
