@@ -1,12 +1,14 @@
 import request from "supertest";
 import {app} from '../../app';
 import {Ticket} from '../../models/ticket';
+import mongoose from "mongoose";
 
 it('fetches the order', async () => {
     // create ticket
     const ticket = Ticket.build({
-       title: 'lp',
-       price: 39.90
+        title: 'lp',
+        price: 39.90,
+        id: new mongoose.Types.ObjectId().toHexString()
     });
     await ticket.save();
 
@@ -20,7 +22,7 @@ it('fetches the order', async () => {
         .send({ticketId: ticket.id})
         .expect(201);
     //make request
-    const {body: fetchedOrder} = await request (app)
+    const {body: fetchedOrder} = await request(app)
         .get(`/api/orders/${order.id}`)
         .set('Cookie', user)
         .send()
@@ -28,7 +30,7 @@ it('fetches the order', async () => {
     expect(fetchedOrder.id).toEqual(order.id);
 
     //make request
-    await request (app)
+    await request(app)
         .get(`/api/orders/${order.id}`)
         .set('Cookie', userTwo)
         .send()
