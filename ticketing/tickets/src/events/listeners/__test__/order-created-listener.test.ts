@@ -5,17 +5,17 @@ import {natsWrapper} from "../../../nats-wrapper";
 import mongoose from "mongoose";
 import {Message} from "node-nats-streaming";
 
-const setup = async() => {
+const setup = async () => {
     // create an instance of a listener
     const listener = new OrderCreatedListener(natsWrapper.client);
-    
+
     // create a new ticket
     const ticket = Ticket.build({
         price: 49.99, title: "LP", userId: mongoose.Types.ObjectId().toHexString()
     });
     // save a ticket
     await ticket.save();
-    
+
     // create fake data event
     const data: OrderCreatedEvent['data'] = {
         id: mongoose.Types.ObjectId().toHexString(),
@@ -52,4 +52,12 @@ it('acks the message', async () => {
     const {ticket, msg} = await setup();
     await ticket.save();
     msg.ack()
+});
+
+it('publishes a ticket updated event', async () => {
+   const {listener, ticket, data, msg} = await setup();
+
+   await listener.onMessage(data, msg);
+
+   expect(natsWrapper.client.publish).toHaveBeenCalled();
 });

@@ -4,7 +4,7 @@ import {
     validateRequest,
     NotFoundError,
     requireAuth,
-    NotAuthorizedError
+    NotAuthorizedError, BadRequestError
 } from "@maxytick/common";
 import {Ticket} from '../models/ticket';
 import {natsWrapper} from "../nats-wrapper";
@@ -29,6 +29,10 @@ router.put(
 
         if (!ticket) {
             throw new NotFoundError();
+        }
+
+        if (ticket.orderId) {
+            throw new BadRequestError('Ticket can not be edited, because it is already booked');
         }
 
         if (ticket.userId !== req.currentUser!.id) {
