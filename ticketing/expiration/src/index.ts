@@ -1,4 +1,6 @@
 import {natsWrapper} from './nats-wrapper';
+import {OrderCreatedListener} from "./events/listeners/order-created-listener";
+import nats from "node-nats-streaming";
 
 const start = async () => {
     if (!process.env.NATS_CLIENT_ID) {
@@ -22,6 +24,8 @@ const start = async () => {
         });
         process.on('SIGNT', () => natsWrapper.client.close());
         process.on('SIGTERM', () => natsWrapper.client.close());
+
+        new OrderCreatedListener(natsWrapper.client).listen();
     } catch (err) {
         console.error(err);
     }
