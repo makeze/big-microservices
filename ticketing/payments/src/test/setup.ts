@@ -5,11 +5,7 @@ import { app } from '../app';
 import jwt from 'jsonwebtoken';
 
 declare global {
-  namespace NodeJS {
-    interface Global {
-      signin(): string[];
-    }
-  }
+  var signin: (id?: string) => string[];
 }
 
 let mongo: any;

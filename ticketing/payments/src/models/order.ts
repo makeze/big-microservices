@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import {OrderStatus} from "@maxytick/common";
-
+import {updateIfCurrentPlugin} from "mongoose-update-if-current";
 
 interface OrderAttrs {
     id: string;
@@ -27,7 +27,7 @@ const orderSchema = new mongoose.Schema({
         required: true,
     },
     price: {
-        type: number,
+        type: Number,
         required: true,
     },
     status: {
@@ -43,14 +43,17 @@ const orderSchema = new mongoose.Schema({
     }
 });
 
+orderSchema.set('versionKey', 'version');
+orderSchema.plugin(updateIfCurrentPlugin);
+
 orderSchema.statics.build = (attrs: OrderAttrs) => {
     return new Order({
-       _id: atts.id,
-       version: attrs.version,
+        _id: attrs.id,
+        version: attrs.version,
         price: attrs.price,
         userId: attrs.userId,
         status: attrs.status,
     });
 };
 
-const Order = mongoose.model<OrderDoc, OrderModel>('Order', orderSchema);
+export const Order = mongoose.model<OrderDoc, OrderModel>('Order', orderSchema);
