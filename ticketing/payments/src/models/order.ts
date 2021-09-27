@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
-import {OrderStatus} from "@maxytick/common";
 import {updateIfCurrentPlugin} from "mongoose-update-if-current";
+import {OrderStatus} from "@maxytick/common";
 
 interface OrderAttrs {
     id: string;
@@ -18,7 +18,7 @@ interface OrderDoc extends mongoose.Document {
 }
 
 interface OrderModel extends mongoose.Model<OrderDoc> {
-    build(atts: OrderAttrs): OrderDoc;
+    build(attrs: OrderAttrs): OrderDoc;
 }
 
 const orderSchema = new mongoose.Schema({
@@ -56,4 +56,6 @@ orderSchema.statics.build = (attrs: OrderAttrs) => {
     });
 };
 
-export const Order = mongoose.model<OrderDoc, OrderModel>('Order', orderSchema);
+const Order = mongoose.model<OrderDoc, OrderModel>('Order', orderSchema);
+
+export { Order };
