@@ -5,7 +5,6 @@ import {Order} from "../../models/order";
 
 export class OrderCancelledListener extends Listener<OrderCancelledEvent> {
     async onMessage(data: OrderCancelledEvent["data"], msg: Message): Promise<void> {
-        console.log(data);
         const order = await Order.findOne({
             _id: data.id,
             version: data.version - 1

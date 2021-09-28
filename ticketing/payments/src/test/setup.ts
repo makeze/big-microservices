@@ -7,6 +7,7 @@ import jwt from 'jsonwebtoken';
 declare global {
   var signin: (id?: string) => string[];
 }
+process.env.STRIPE_KEY = 'sk_test_51JeTYqHgtH95BeflEIiwaY5uWzGq0lpcmNw4zsFQeoe9LOxKfAEIG1NRrHt22Yrj2eqLkvmWJm0WgyTiapHEKhF4005pDCJwJR';
 
 let mongo: any;
 beforeAll(async () => {
