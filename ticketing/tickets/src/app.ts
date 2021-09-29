@@ -6,7 +6,7 @@ import {errorHandler, NotFoundError, currentUser} from '@maxytick/common';
 import {createTicketRouter} from './routes/new';
 import {showTicketRouter} from './routes/show';
 import {updateTicketRouter} from './routes/update';
-import {indexTicketRouter} from "./routes/__test__";
+import {indexTicketRouter} from "./routes";
 
 const app = express();
 app.set('trust proxy', true);
